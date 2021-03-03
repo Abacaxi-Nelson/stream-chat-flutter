@@ -42,6 +42,20 @@ enum DefaultAttachmentTypes {
   file,
 }
 
+class AttachmentCustomIconsButtonOnTap {
+  AttachmentCustomIconsButtonOnTap(
+      this.attachmentFile, this.extraDataMap, this.type);
+  final AttachmentFile attachmentFile;
+  final Map<String, dynamic> extraDataMap;
+  final String type;
+}
+
+class AttachmentCustomIconsButton {
+  AttachmentCustomIconsButton(this.icon, this.onTap);
+  final Widget icon;
+  final AttachmentCustomIconsButtonOnTap Function() onTap;
+}
+
 const _kMinMediaPickerSize = 360.0;
 
 const _kMaxAttachmentSize = 20971520; // 20MB in Bytes
@@ -90,24 +104,25 @@ const _kMaxAttachmentSize = 20971520; // 20MB in Bytes
 /// Modify it to change the widget appearance.
 class MessageInput extends StatefulWidget {
   /// Instantiate a new MessageInput
-  MessageInput({
-    Key key,
-    this.onMessageSent,
-    this.preMessageSending,
-    this.parentMessage,
-    this.editMessage,
-    this.maxHeight = 150,
-    this.keyboardType = TextInputType.multiline,
-    this.disableAttachments = false,
-    this.initialMessage,
-    this.textEditingController,
-    this.actions,
-    this.actionsLocation = ActionsLocation.left,
-    this.attachmentThumbnailBuilders,
-    this.focusNode,
-    this.quotedMessage,
-    this.onQuotedMessageCleared,
-  }) : super(key: key);
+  MessageInput(
+      {Key key,
+      this.onMessageSent,
+      this.preMessageSending,
+      this.parentMessage,
+      this.editMessage,
+      this.maxHeight = 150,
+      this.keyboardType = TextInputType.multiline,
+      this.disableAttachments = false,
+      this.initialMessage,
+      this.textEditingController,
+      this.actions,
+      this.actionsLocation = ActionsLocation.left,
+      this.attachmentThumbnailBuilders,
+      this.focusNode,
+      this.quotedMessage,
+      this.onQuotedMessageCleared,
+      this.listAttachmentCustomIconsButton})
+      : super(key: key);
 
   /// Message to edit
   final Message editMessage;
@@ -154,6 +169,9 @@ class MessageInput extends StatefulWidget {
 
   ///
   final VoidCallback onQuotedMessageCleared;
+
+  /// add your custom attachment actions
+  final List<AttachmentCustomIconsButton> listAttachmentCustomIconsButton;
 
   @override
   MessageInputState createState() => MessageInputState();
@@ -884,6 +902,45 @@ class MessageInputState extends State<MessageInput> {
                           pickFile(DefaultAttachmentTypes.video, true);
                         },
                 ),
+                for (final attachmentCustomIconsButton
+                    in widget.listAttachmentCustomIconsButton)
+                  IconButton(
+                    padding: const EdgeInsets.all(0),
+                    iconSize: 24,
+                    icon: attachmentCustomIconsButton.icon,
+                    onPressed:
+                        _attachmentContainsFile && _attachments.isNotEmpty
+                            ? null
+                            : () {
+                                try {
+                                  final attachmentOnTap =
+                                      attachmentCustomIconsButton.onTap();
+
+                                  final attachment = Attachment(
+                                    file: attachmentOnTap.attachmentFile,
+                                    type: attachmentOnTap.type,
+                                    extraData:
+                                        attachmentOnTap.extraDataMap.isNotEmpty
+                                            ? attachmentOnTap.extraDataMap
+                                            : null,
+                                  );
+
+                                  setState(() {
+                                    _attachments.update(attachment.id, (it) {
+                                      return it.copyWith(
+                                        file: attachmentOnTap.attachmentFile,
+                                        extraData: {...it.extraData}..update(
+                                            'file_size',
+                                            (_) => attachmentOnTap
+                                                .attachmentFile.size),
+                                      );
+                                    });
+                                  });
+                                } catch (e, s) {
+                                  // hum
+                                }
+                              },
+                  ),
               ],
             ),
             GestureDetector(
