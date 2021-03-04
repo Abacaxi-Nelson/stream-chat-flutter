@@ -12,15 +12,17 @@ import 'attachment_widget.dart';
 class FileAttachment extends AttachmentWidget {
   final Widget title;
   final Widget trailing;
+  final VoidCallback onAttachmentTap;
 
-  const FileAttachment({
-    Key key,
-    @required Message message,
-    @required Attachment attachment,
-    Size size,
-    this.title,
-    this.trailing,
-  }) : super(key: key, message: message, attachment: attachment, size: size);
+  const FileAttachment(
+      {Key key,
+      @required Message message,
+      @required Attachment attachment,
+      Size size,
+      this.title,
+      this.trailing,
+      this.onAttachmentTap})
+      : super(key: key, message: message, attachment: attachment, size: size);
 
   bool get isVideoAttachment => attachment.title?.mimeType?.type == 'video';
 
@@ -39,36 +41,38 @@ class FileAttachment extends AttachmentWidget {
             color: StreamChatTheme.of(context).colorTheme.greyWhisper,
           ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              child: _getFileTypeImage(context),
-              height: 40.0,
-              width: 33.33,
-              margin: EdgeInsets.all(8.0),
-            ),
-            SizedBox(width: 8.0),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    attachment?.title ?? 'File',
-                    style: StreamChatTheme.of(context).textTheme.bodyBold,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+        child: GestureDetector(
+            onTap: onAttachmentTap,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: _getFileTypeImage(context),
+                  height: 40.0,
+                  width: 33.33,
+                  margin: EdgeInsets.all(8.0),
+                ),
+                SizedBox(width: 8.0),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Audio post',
+                        style: StreamChatTheme.of(context).textTheme.bodyBold,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 3.0),
+                      _buildSubtitle(context),
+                    ],
                   ),
-                  SizedBox(height: 3.0),
-                  _buildSubtitle(context),
-                ],
-              ),
-            ),
-            SizedBox(width: 8.0),
-            _buildTrailing(context),
-          ],
-        ),
+                ),
+                SizedBox(width: 8.0),
+                //_buildTrailing(context),
+              ],
+            )),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emojis/emoji.dart';
@@ -121,8 +122,11 @@ class MessageInput extends StatefulWidget {
       this.focusNode,
       this.quotedMessage,
       this.onQuotedMessageCleared,
-      this.listAttachmentCustomIconsButton})
+      this.listAttachmentCustomIconsButton,
+      this.tapRecord})
       : super(key: key);
+
+  final File Function() tapRecord;
 
   /// Message to edit
   final Message editMessage;
@@ -907,7 +911,7 @@ class MessageInputState extends State<MessageInput> {
                 IconButton(
                   padding: const EdgeInsets.all(0),
                   iconSize: 24,
-                  icon: Icon(Icons.insert_comment, size: 24),
+                  icon: Icon(Icons.insert_comment, size: 21),
                   onPressed: _attachmentContainsFile && _attachments.isNotEmpty
                       ? null
                       : () {
@@ -917,8 +921,14 @@ class MessageInputState extends State<MessageInput> {
                 IconButton(
                   padding: const EdgeInsets.all(0),
                   iconSize: 24,
-                  icon: Icon(Icons.keyboard_voice, size: 24),
-                  onPressed: () {},
+                  icon: Icon(Icons.keyboard_voice, size: 21),
+                  onPressed: _attachmentContainsFile && _attachments.isNotEmpty
+                      ? null
+                      : () async {
+                          final fileAudio = await widget.tapRecord();
+                          if (fileAudio == null) return;
+                          await createAudioPost(fileAudio);
+                        },
                 ),
               ],
             ),
@@ -1882,6 +1892,52 @@ class MessageInputState extends State<MessageInput> {
       _attachments[attachment.id] = attachment.copyWith(
         uploadState: attachment.uploadState ?? UploadState.success(),
       );
+    });
+  }
+
+  void createAudioPost(File fileAudio) async {
+    setState(() => _inputEnabled = false);
+
+    AttachmentFile file;
+    final attachmentType = 'file';
+    FileType type = FileType.any;
+
+    final bytes = await fileAudio.readAsBytes();
+    file = AttachmentFile(
+      path: fileAudio.path,
+      name: fileAudio.path.split('/').last,
+      bytes: bytes,
+      size: bytes.length,
+    );
+
+    setState(() => _inputEnabled = true);
+
+    final mimeType = file.name?.mimeType;
+    final extraDataMap = <String, dynamic>{};
+
+    if (mimeType?.subtype != null) {
+      extraDataMap['mime_type'] = mimeType.subtype.toLowerCase();
+    }
+
+    if (file.size != null) {
+      extraDataMap['file_size'] = file.size;
+    }
+
+    final attachment = Attachment(
+      file: file,
+      type: attachmentType,
+      extraData: extraDataMap.isNotEmpty ? extraDataMap : null,
+    );
+
+    _attachments[attachment.id] = attachment;
+
+    setState(() {
+      _attachments.update(attachment.id, (it) {
+        return it.copyWith(
+          file: file,
+          extraData: {...it.extraData}..update('file_size', (_) => file.size),
+        );
+      });
     });
   }
 

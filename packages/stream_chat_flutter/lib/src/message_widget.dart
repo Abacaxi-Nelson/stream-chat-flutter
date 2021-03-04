@@ -244,13 +244,15 @@ class MessageWidget extends StatefulWidget {
           },
           'file': (context, message, attachment) {
             return FileAttachment(
-              message: message,
-              attachment: attachment,
-              size: Size(
-                MediaQuery.of(context).size.width * 0.8,
-                MediaQuery.of(context).size.height * 0.3,
-              ),
-            );
+                message: message,
+                attachment: attachment,
+                size: Size(
+                  MediaQuery.of(context).size.width * 0.8,
+                  MediaQuery.of(context).size.height * 0.3,
+                ),
+                onAttachmentTap: () {
+                  onAttachmentTap(message, attachment);
+                });
           },
         }..addAll(customAttachmentBuilders ?? {}),
         super(key: key);
