@@ -911,13 +911,13 @@ class MessageInputState extends State<MessageInput> {
                   onPressed: _attachmentContainsFile && _attachments.isNotEmpty
                       ? null
                       : () {
-                          pickFile(DefaultAttachmentTypes.video, true);
+                          createTextPost();
                         },
                 ),
                 IconButton(
                   padding: const EdgeInsets.all(0),
                   iconSize: 24,
-                  icon: Icon(Icons.keyboard, size: 24),
+                  icon: Icon(Icons.keyboard_voice, size: 24),
                   onPressed: () {},
                 ),
               ],
@@ -1885,8 +1885,7 @@ class MessageInputState extends State<MessageInput> {
     });
   }
 
-  void createTextPost(DefaultAttachmentTypes fileType,
-      [bool camera = false]) async {
+  void createTextPost() async {
     setState(() => _inputEnabled = false);
     final imageUrl =
         'https://firebasestorage.googleapis.com/v0/b/amber-app-supercool.appspot.com/o/text_post.png?alt=media&token=aba64280-b8b1-4c45-871d-2b077cf91d13';
@@ -1903,6 +1902,7 @@ class MessageInputState extends State<MessageInput> {
 
     setState(() {
       _attachments[attachment.id] = attachment;
+      _inputEnabled = true;
     });
   }
 

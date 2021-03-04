@@ -47,6 +47,8 @@ class MessageWidget extends StatefulWidget {
   /// Function called on mention tap
   final void Function(User) onMentionTap;
 
+  final void Function(Message message, Attachment attachment) onAttachmentTap;
+
   /// The function called when tapping on replies
   final void Function(Message) onThreadTap;
   final void Function(Message) onReplyTap;
@@ -147,80 +149,85 @@ class MessageWidget extends StatefulWidget {
   final void Function(Message) onMessageTap;
 
   ///
-  MessageWidget({
-    Key key,
-    @required this.message,
-    @required this.messageTheme,
-    this.reverse = false,
-    this.translateUserAvatar = true,
-    this.shape,
-    this.attachmentShape,
-    this.borderSide,
-    this.attachmentBorderSide,
-    this.borderRadiusGeometry,
-    this.attachmentBorderRadiusGeometry,
-    this.onMentionTap,
-    this.onMessageTap,
-    this.showReactionPickerIndicator = false,
-    this.showUserAvatar = DisplayWidget.show,
-    this.showSendingIndicator = true,
-    this.showThreadReplyIndicator = false,
-    this.showInChannelIndicator = false,
-    this.onReplyTap,
-    this.onThreadTap,
-    this.showUsername = true,
-    this.showTimestamp = true,
-    this.showReactions = true,
-    this.showDeleteMessage = true,
-    this.showEditMessage = true,
-    this.showReplyMessage = true,
-    this.showThreadReplyMessage = true,
-    this.showResendMessage = true,
-    this.showCopyMessage = true,
-    this.showFlagButton = true,
-    this.onUserAvatarTap,
-    this.onLinkTap,
-    this.onMessageActions,
-    this.onShowMessage,
-    this.editMessageInputBuilder,
-    this.textBuilder,
-    this.onReturnAction,
-    Map<String, AttachmentBuilder> customAttachmentBuilders,
-    this.readList,
-    this.padding,
-    this.textPadding = const EdgeInsets.symmetric(
-      horizontal: 16.0,
-      vertical: 8.0,
-    ),
-    this.attachmentPadding = EdgeInsets.zero,
-    this.allRead = false,
-    this.onQuotedMessageTap,
-  })  : attachmentBuilders = {
+  MessageWidget(
+      {Key key,
+      @required this.message,
+      @required this.messageTheme,
+      this.reverse = false,
+      this.translateUserAvatar = true,
+      this.shape,
+      this.attachmentShape,
+      this.borderSide,
+      this.attachmentBorderSide,
+      this.borderRadiusGeometry,
+      this.attachmentBorderRadiusGeometry,
+      this.onMentionTap,
+      this.onMessageTap,
+      this.showReactionPickerIndicator = false,
+      this.showUserAvatar = DisplayWidget.show,
+      this.showSendingIndicator = true,
+      this.showThreadReplyIndicator = false,
+      this.showInChannelIndicator = false,
+      this.onReplyTap,
+      this.onThreadTap,
+      this.showUsername = true,
+      this.showTimestamp = true,
+      this.showReactions = true,
+      this.showDeleteMessage = true,
+      this.showEditMessage = true,
+      this.showReplyMessage = true,
+      this.showThreadReplyMessage = true,
+      this.showResendMessage = true,
+      this.showCopyMessage = true,
+      this.showFlagButton = true,
+      this.onUserAvatarTap,
+      this.onLinkTap,
+      this.onMessageActions,
+      this.onShowMessage,
+      this.editMessageInputBuilder,
+      this.textBuilder,
+      this.onReturnAction,
+      Map<String, AttachmentBuilder> customAttachmentBuilders,
+      this.readList,
+      this.padding,
+      this.textPadding = const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 8.0,
+      ),
+      this.attachmentPadding = EdgeInsets.zero,
+      this.allRead = false,
+      this.onQuotedMessageTap,
+      this.onAttachmentTap})
+      : attachmentBuilders = {
           'image': (context, message, attachment) {
             return ImageAttachment(
-              attachment: attachment,
-              message: message,
-              messageTheme: messageTheme,
-              size: Size(
-                MediaQuery.of(context).size.width * 0.8,
-                MediaQuery.of(context).size.height * 0.3,
-              ),
-              onShowMessage: onShowMessage,
-              onReturnAction: onReturnAction,
-            );
+                attachment: attachment,
+                message: message,
+                messageTheme: messageTheme,
+                size: Size(
+                  MediaQuery.of(context).size.width * 0.8,
+                  MediaQuery.of(context).size.height * 0.3,
+                ),
+                onShowMessage: onShowMessage,
+                onReturnAction: onReturnAction,
+                onAttachmentTap: () {
+                  onAttachmentTap(message, attachment);
+                });
           },
           'video': (context, message, attachment) {
             return VideoAttachment(
-              attachment: attachment,
-              messageTheme: messageTheme,
-              size: Size(
-                MediaQuery.of(context).size.width * 0.8,
-                MediaQuery.of(context).size.height * 0.3,
-              ),
-              message: message,
-              onShowMessage: onShowMessage,
-              onReturnAction: onReturnAction,
-            );
+                attachment: attachment,
+                messageTheme: messageTheme,
+                size: Size(
+                  MediaQuery.of(context).size.width * 0.8,
+                  MediaQuery.of(context).size.height * 0.3,
+                ),
+                message: message,
+                onShowMessage: onShowMessage,
+                onReturnAction: onReturnAction,
+                onAttachmentTap: () {
+                  onAttachmentTap(message, attachment);
+                });
           },
           'giphy': (context, message, attachment) {
             return GiphyAttachment(
