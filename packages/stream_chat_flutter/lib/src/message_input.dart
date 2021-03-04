@@ -868,6 +868,7 @@ class MessageInputState extends State<MessageInput> {
                           });
                         },
                 ),
+                /*
                 IconButton(
                   iconSize: 32,
                   icon: StreamSvgIcon.files(
@@ -879,6 +880,7 @@ class MessageInputState extends State<MessageInput> {
                           pickFile(DefaultAttachmentTypes.file, false);
                         },
                 ),
+                */
                 IconButton(
                   iconSize: 24,
                   icon: StreamSvgIcon.camera(
@@ -902,45 +904,22 @@ class MessageInputState extends State<MessageInput> {
                           pickFile(DefaultAttachmentTypes.video, true);
                         },
                 ),
-                for (final attachmentCustomIconsButton
-                    in widget.listAttachmentCustomIconsButton)
-                  IconButton(
-                    padding: const EdgeInsets.all(0),
-                    iconSize: 24,
-                    icon: attachmentCustomIconsButton.icon,
-                    onPressed:
-                        _attachmentContainsFile && _attachments.isNotEmpty
-                            ? null
-                            : () {
-                                try {
-                                  final attachmentOnTap =
-                                      attachmentCustomIconsButton.onTap();
-
-                                  final attachment = Attachment(
-                                    file: attachmentOnTap.attachmentFile,
-                                    type: attachmentOnTap.type,
-                                    extraData:
-                                        attachmentOnTap.extraDataMap.isNotEmpty
-                                            ? attachmentOnTap.extraDataMap
-                                            : null,
-                                  );
-
-                                  setState(() {
-                                    _attachments.update(attachment.id, (it) {
-                                      return it.copyWith(
-                                        file: attachmentOnTap.attachmentFile,
-                                        extraData: {...it.extraData}..update(
-                                            'file_size',
-                                            (_) => attachmentOnTap
-                                                .attachmentFile.size),
-                                      );
-                                    });
-                                  });
-                                } catch (e, s) {
-                                  // hum
-                                }
-                              },
-                  ),
+                IconButton(
+                  padding: const EdgeInsets.all(0),
+                  iconSize: 24,
+                  icon: Icon(Icons.insert_comment, size: 24),
+                  onPressed: _attachmentContainsFile && _attachments.isNotEmpty
+                      ? null
+                      : () {
+                          pickFile(DefaultAttachmentTypes.video, true);
+                        },
+                ),
+                IconButton(
+                  padding: const EdgeInsets.all(0),
+                  iconSize: 24,
+                  icon: Icon(Icons.keyboard, size: 24),
+                  onPressed: () {},
+                ),
               ],
             ),
             GestureDetector(
@@ -1903,6 +1882,27 @@ class MessageInputState extends State<MessageInput> {
       _attachments[attachment.id] = attachment.copyWith(
         uploadState: attachment.uploadState ?? UploadState.success(),
       );
+    });
+  }
+
+  void createTextPost(DefaultAttachmentTypes fileType,
+      [bool camera = false]) async {
+    setState(() => _inputEnabled = false);
+    final imageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/amber-app-supercool.appspot.com/o/text_post.png?alt=media&token=aba64280-b8b1-4c45-871d-2b077cf91d13';
+    final extraDataMap = <String, dynamic>{};
+    extraDataMap['custom_type'] = 'text';
+
+    final attachment = Attachment(
+      imageUrl: imageUrl,
+      type: 'image',
+      extraData: extraDataMap,
+    );
+
+    _attachments[attachment.id] = attachment;
+
+    setState(() {
+      _attachments[attachment.id] = attachment;
     });
   }
 
