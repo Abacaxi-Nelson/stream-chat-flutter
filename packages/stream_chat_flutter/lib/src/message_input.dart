@@ -2194,6 +2194,8 @@ class MessageInputState extends State<MessageInput> {
       sendingFuture = channel.updateMessage(message);
     }
 
+    FocusScope.of(context).requestFocus(_focusNode);
+
     return sendingFuture.then((resp) {
       if (widget.onMessageSent != null) {
         widget.onMessageSent(resp.message);
