@@ -2085,15 +2085,18 @@ class MessageInputState extends State<MessageInput> {
   }
 
   Widget _buildSendButton(BuildContext context) {
+    final size = 36.0;
     return IconButton(
       onPressed: sendMessage,
       padding: const EdgeInsets.all(0),
       splashRadius: 24,
       constraints: BoxConstraints.tightFor(
-        height: 24,
-        width: 24,
+        height: size,
+        width: size,
       ),
       icon: StreamSvgIcon(
+        height: size,
+        width: size,
         assetName: _getSendIcon(),
         color: StreamChatTheme.of(context).messageInputTheme.sendButtonColor,
       ),
