@@ -1102,6 +1102,35 @@ class MessageInputState extends State<MessageInput> {
       bytes: mediaFile.readAsBytesSync(),
     );
 
+    if (medium.type == AssetType.image) {
+      final croppedFile = await ImageCropper.cropImage(
+          sourcePath: file.path,
+          compressQuality: 100,
+          aspectRatio: const CropAspectRatio(ratioX: 9, ratioY: 16),
+          aspectRatioPresets: [
+            CropAspectRatioPreset.ratio5x3,
+            CropAspectRatioPreset.original
+          ],
+          androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+            hideBottomControls: true,
+          ),
+          iosUiSettings: IOSUiSettings(
+              rotateButtonsHidden: true, rotateClockwiseButtonHidden: true));
+      if (croppedFile != null) {
+        print('crop is not null');
+        //file = croppedFile;
+        final bytes = await croppedFile.readAsBytes();
+        file = AttachmentFile(
+            size: bytes.length,
+            path: croppedFile.path,
+            bytes: bytes,
+            name: croppedFile.path.split('/').last);
+        print('crop name => ${croppedFile.path.split('/').last}');
+      }
+    }
+
     if (file.size > _kMaxAttachmentSize) {
       if (medium?.type == AssetType.video) {
         final mediaInfo = await VideoService.compressVideo(file.path);
