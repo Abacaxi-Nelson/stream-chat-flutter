@@ -1991,10 +1991,10 @@ class MessageInputState extends State<MessageInput> {
       }
       final bytes = await pickedFile.readAsBytes();
       file = AttachmentFile(
-        size: bytes.length,
-        path: pickedFile.path,
-        bytes: bytes,
-      );
+          size: bytes.length,
+          path: pickedFile.path,
+          bytes: bytes,
+          name: pickedFile.path.split('/').last);
     } else {
       FileType type;
       if (fileType == DefaultAttachmentTypes.image) {
