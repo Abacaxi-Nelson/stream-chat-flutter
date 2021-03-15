@@ -20,6 +20,7 @@ import 'package:stream_chat_flutter/src/stream_svg_icon.dart';
 import 'package:stream_chat_flutter/src/user_avatar.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 import 'package:substring_highlight/substring_highlight.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import '../stream_chat_flutter.dart';
 import 'attachment/attachment.dart';
@@ -2033,6 +2034,37 @@ class MessageInputState extends State<MessageInput> {
 
     if (file.size != null) {
       extraDataMap['file_size'] = file.size;
+    }
+
+    //crop
+    print('on crop ou pas ? ${fileType == DefaultAttachmentTypes.image}');
+    if (fileType == DefaultAttachmentTypes.image) {
+      final croppedFile = await ImageCropper.cropImage(
+          sourcePath: file.path,
+          compressQuality: 100,
+          aspectRatio: const CropAspectRatio(ratioX: 9, ratioY: 16),
+          aspectRatioPresets: [
+            CropAspectRatioPreset.ratio5x3,
+            CropAspectRatioPreset.original
+          ],
+          androidUiSettings: AndroidUiSettings(
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+            hideBottomControls: true,
+          ),
+          iosUiSettings: IOSUiSettings(
+              rotateButtonsHidden: true, rotateClockwiseButtonHidden: true));
+      if (croppedFile != null) {
+        print('crop is not null');
+        //file = croppedFile;
+        final bytes = await croppedFile.readAsBytes();
+        file = AttachmentFile(
+            size: bytes.length,
+            path: croppedFile.path,
+            bytes: bytes,
+            name: croppedFile.path.split('/').last);
+        print('crop name => ${croppedFile.path.split('/').last}');
+      }
     }
 
     final attachment = Attachment(
