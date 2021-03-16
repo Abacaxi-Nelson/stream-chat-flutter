@@ -1119,7 +1119,6 @@ class MessageInputState extends State<MessageInput> {
           iosUiSettings: IOSUiSettings(
               rotateButtonsHidden: true, rotateClockwiseButtonHidden: true));
       if (croppedFile != null) {
-        print('crop is not null');
         //file = croppedFile;
         final bytes = await croppedFile.readAsBytes();
         file = AttachmentFile(
@@ -1127,7 +1126,6 @@ class MessageInputState extends State<MessageInput> {
             path: croppedFile.path,
             bytes: bytes,
             name: croppedFile.path.split('/').last);
-        print('crop name => ${croppedFile.path.split('/').last}');
       }
     }
 
@@ -2066,7 +2064,6 @@ class MessageInputState extends State<MessageInput> {
     }
 
     //crop
-    print('on crop ou pas ? ${fileType == DefaultAttachmentTypes.image}');
     if (fileType == DefaultAttachmentTypes.image) {
       final croppedFile = await ImageCropper.cropImage(
           sourcePath: file.path,
@@ -2084,7 +2081,6 @@ class MessageInputState extends State<MessageInput> {
           iosUiSettings: IOSUiSettings(
               rotateButtonsHidden: true, rotateClockwiseButtonHidden: true));
       if (croppedFile != null) {
-        print('crop is not null');
         //file = croppedFile;
         final bytes = await croppedFile.readAsBytes();
         file = AttachmentFile(
@@ -2092,7 +2088,6 @@ class MessageInputState extends State<MessageInput> {
             path: croppedFile.path,
             bytes: bytes,
             name: croppedFile.path.split('/').last);
-        print('crop name => ${croppedFile.path.split('/').last}');
       }
     }
 
