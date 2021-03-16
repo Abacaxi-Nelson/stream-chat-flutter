@@ -127,7 +127,7 @@ class MessageInput extends StatefulWidget {
       this.tapRecord})
       : super(key: key);
 
-  final File Function() tapRecord;
+  final Future<File> Function() tapRecord;
 
   /// Message to edit
   final Message editMessage;
