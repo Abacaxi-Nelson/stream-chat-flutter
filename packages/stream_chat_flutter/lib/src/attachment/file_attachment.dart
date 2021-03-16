@@ -70,7 +70,7 @@ class FileAttachment extends AttachmentWidget {
                   ),
                 ),
                 SizedBox(width: 8.0),
-                //_buildTrailing(context),
+                _buildTrailing(context),
               ],
             )),
       ),
