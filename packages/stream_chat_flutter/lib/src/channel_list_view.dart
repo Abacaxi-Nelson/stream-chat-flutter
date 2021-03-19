@@ -53,30 +53,33 @@ typedef ViewInfoCallback = void Function(Channel);
 /// Modify it to change the widget appearance.
 class ChannelListView extends StatefulWidget {
   /// Instantiate a new ChannelListView
-  ChannelListView({
-    Key key,
-    this.filter,
-    this.options,
-    this.sort,
-    this.pagination,
-    this.onChannelTap,
-    this.onChannelLongPress,
-    this.channelWidget,
-    this.channelPreviewBuilder,
-    this.separatorBuilder,
-    this.onImageTap,
-    this.onStartChatPressed,
-    this.swipeToAction = false,
-    this.pullToRefresh = true,
-    this.crossAxisCount = 1,
-    this.padding,
-    this.selectedChannels = const [],
-    this.onViewInfoTap,
-    this.errorBuilder,
-    this.emptyBuilder,
-    this.loadingBuilder,
-    this.listBuilder,
-  }) : super(key: key);
+  ChannelListView(
+      {Key key,
+      this.filter,
+      this.options,
+      this.sort,
+      this.pagination,
+      this.onChannelTap,
+      this.onChannelLongPress,
+      this.channelWidget,
+      this.channelPreviewBuilder,
+      this.separatorBuilder,
+      this.onImageTap,
+      this.onStartChatPressed,
+      this.swipeToAction = false,
+      this.pullToRefresh = true,
+      this.crossAxisCount = 1,
+      this.padding,
+      this.selectedChannels = const [],
+      this.onViewInfoTap,
+      this.errorBuilder,
+      this.emptyBuilder,
+      this.loadingBuilder,
+      this.listBuilder,
+      this.traillingWidget})
+      : super(key: key);
+
+  final Function(Channel) traillingWidget;
 
   /// If true a default swipe to action behaviour will be added to this widget
   final bool swipeToAction;
@@ -551,6 +554,7 @@ class _ChannelListViewState extends State<ChannelListView> {
                 color: StreamChatTheme.of(context).colorTheme.whiteSnow,
                 child: widget.channelPreviewBuilder?.call(context, channel) ??
                     ChannelPreview(
+                      traillingWidget: widget.traillingWidget,
                       onLongPress: widget.onChannelLongPress,
                       channel: channel,
                       onImageTap: widget.onImageTap?.call(channel),

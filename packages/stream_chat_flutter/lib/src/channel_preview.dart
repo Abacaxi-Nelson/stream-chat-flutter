@@ -32,13 +32,16 @@ class ChannelPreview extends StatelessWidget {
   /// The function called when the image is tapped
   final VoidCallback onImageTap;
 
-  ChannelPreview({
-    @required this.channel,
-    Key key,
-    this.onTap,
-    this.onLongPress,
-    this.onImageTap,
-  }) : super(key: key);
+  final Function(Channel) traillingWidget;
+
+  ChannelPreview(
+      {@required this.channel,
+      Key key,
+      this.onTap,
+      this.onLongPress,
+      this.onImageTap,
+      this.traillingWidget})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +91,7 @@ class ChannelPreview extends StatelessWidget {
                           channel: channel,
                         );
                       }),
+                  traillingWidget(channel)
                 ],
               ),
               subtitle: Row(
