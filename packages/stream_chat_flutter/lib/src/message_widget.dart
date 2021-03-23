@@ -758,8 +758,8 @@ class _MessageWidgetState extends State<MessageWidget>
         child: StreamSvgIcon(
             color: haveLove != null ? Colors.red : Colors.grey,
             assetName: 'Icon_love_reaction.svg',
-            width: 30,
-            height: 30));
+            width: 24,
+            height: 24));
   }
 
   Widget _buildReactionIndicator(
