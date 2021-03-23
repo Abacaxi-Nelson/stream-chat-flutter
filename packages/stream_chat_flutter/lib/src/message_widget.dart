@@ -326,26 +326,27 @@ class _MessageWidgetState extends State<MessageWidget>
         child: InkWell(
           onTap: () {
             widget.onMessageTap(widget.message);
+            if (widget.message.user.id != StreamChat.of(context).user.id) {
+              final ownId = StreamChat.of(context).user.id;
+              final reactionsMap = <String, Reaction>{};
+              widget.message.ownReactions?.forEach((element) {
+                if (!reactionsMap.containsKey(element.type) ||
+                    element.user.id == ownId) {
+                  reactionsMap[element.type] = element;
+                }
+              });
+              final reactionsList = reactionsMap.values.toList()
+                ..sort((a, b) => a.user.id == ownId ? 1 : -1);
 
-            final ownId = StreamChat.of(context).user.id;
-            final reactionsMap = <String, Reaction>{};
-            widget.message.ownReactions?.forEach((element) {
-              if (!reactionsMap.containsKey(element.type) ||
-                  element.user.id == ownId) {
-                reactionsMap[element.type] = element;
+              final haveLove = reactionsList.singleWhere(
+                  (element) => element.type == 'love',
+                  orElse: () => null);
+
+              if (haveLove == null) {
+                sendReaction(context, 'love');
+              } else {
+                removeReaction(context, haveLove);
               }
-            });
-            final reactionsList = reactionsMap.values.toList()
-              ..sort((a, b) => a.user.id == ownId ? 1 : -1);
-
-            final haveLove = reactionsList.singleWhere(
-                (element) => element.type == 'love',
-                orElse: () => null);
-
-            if (haveLove == null) {
-              sendReaction(context, 'love');
-            } else {
-              removeReaction(context, haveLove);
             }
           },
           onLongPress: widget.message.isDeleted && !isFailedState
@@ -535,7 +536,8 @@ class _MessageWidgetState extends State<MessageWidget>
                   ),
                 ),
                 //NNU
-                _buildReactionIndicatorLike(),
+                if (widget.message.user.id != StreamChat.of(context).user.id)
+                  _buildReactionIndicatorLike(),
               ]),
             ),
           ),
