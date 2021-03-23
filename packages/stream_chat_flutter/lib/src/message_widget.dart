@@ -326,6 +326,27 @@ class _MessageWidgetState extends State<MessageWidget>
         child: InkWell(
           onTap: () {
             widget.onMessageTap(widget.message);
+
+            final ownId = StreamChat.of(context).user.id;
+            final reactionsMap = <String, Reaction>{};
+            widget.message.ownReactions?.forEach((element) {
+              if (!reactionsMap.containsKey(element.type) ||
+                  element.user.id == ownId) {
+                reactionsMap[element.type] = element;
+              }
+            });
+            final reactionsList = reactionsMap.values.toList()
+              ..sort((a, b) => a.user.id == ownId ? 1 : -1);
+
+            final haveLove = reactionsList.singleWhere(
+                (element) => element.type == 'love',
+                orElse: () => null);
+
+            if (haveLove == null) {
+              sendReaction(context, 'love');
+            } else {
+              removeReaction(context, haveLove);
+            }
           },
           onLongPress: widget.message.isDeleted && !isFailedState
               ? null
@@ -335,173 +356,187 @@ class _MessageWidgetState extends State<MessageWidget>
             child: Transform(
               alignment: Alignment.center,
               transform: Matrix4.rotationY(widget.reverse ? pi : 0),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: 0.75,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Stack(
-                      clipBehavior: Clip.none,
-                      alignment: AlignmentDirectional.bottomStart,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                if (widget.showUserAvatar ==
-                                    DisplayWidget.show) ...[
-                                  _buildUserAvatar(),
-                                  SizedBox(width: 4),
-                                ],
-                                if (widget.showUserAvatar == DisplayWidget.hide)
-                                  SizedBox(width: avatarWidth + 4),
-                                Flexible(
-                                  child: PortalEntry(
-                                    portal: Container(
-                                      transform:
-                                          Matrix4.translationValues(-12, 0, 0),
-                                      child: _buildReactionIndicator(context),
-                                      constraints:
-                                          BoxConstraints(maxWidth: 22 * 6.0),
-                                    ),
-                                    portalAnchor: Alignment(-1.0, -1.0),
-                                    childAnchor: Alignment(1, -1.0),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Padding(
-                                          padding: widget.showReactions
-                                              ? EdgeInsets.only(
-                                                  top: widget
-                                                              .message
-                                                              .reactionCounts
-                                                              ?.isNotEmpty ==
-                                                          true
-                                                      ? 18
-                                                      : 0,
-                                                )
-                                              : EdgeInsets.zero,
-                                          child: (widget.message.isDeleted &&
-                                                  !isFailedState)
-                                              ? Transform(
-                                                  alignment: Alignment.center,
-                                                  transform: Matrix4.rotationY(
-                                                      widget.reverse ? pi : 0),
-                                                  child: Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                        horizontal:
-                                                            widget.showUserAvatar ==
-                                                                    DisplayWidget
-                                                                        .gone
-                                                                ? 0
-                                                                : 4.0),
-                                                    child: DeletedMessage(
-                                                      reverse: widget.reverse,
-                                                      borderRadiusGeometry: widget
-                                                          .borderRadiusGeometry,
-                                                      borderSide:
-                                                          widget.borderSide,
-                                                      shape: widget.shape,
-                                                      messageTheme:
-                                                          widget.messageTheme,
+              child: Stack(children: [
+                FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: 0.75,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Stack(
+                        clipBehavior: Clip.none,
+                        alignment: AlignmentDirectional.bottomStart,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  if (widget.showUserAvatar ==
+                                      DisplayWidget.show) ...[
+                                    _buildUserAvatar(),
+                                    SizedBox(width: 4),
+                                  ],
+                                  if (widget.showUserAvatar ==
+                                      DisplayWidget.hide)
+                                    SizedBox(width: avatarWidth + 4),
+                                  Flexible(
+                                    child: PortalEntry(
+                                      portal: Container(
+                                        transform: Matrix4.translationValues(
+                                            -12, 0, 0),
+                                        child: _buildReactionIndicator(context),
+                                        constraints:
+                                            BoxConstraints(maxWidth: 22 * 6.0),
+                                      ),
+                                      portalAnchor: Alignment(-1.0, -1.0),
+                                      childAnchor: Alignment(1, -1.0),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Padding(
+                                            padding: widget.showReactions
+                                                ? EdgeInsets.only(
+                                                    top: widget
+                                                                .message
+                                                                .reactionCounts
+                                                                ?.isNotEmpty ==
+                                                            true
+                                                        ? 18
+                                                        : 0,
+                                                  )
+                                                : EdgeInsets.zero,
+                                            child: (widget.message.isDeleted &&
+                                                    !isFailedState)
+                                                ? Transform(
+                                                    alignment: Alignment.center,
+                                                    transform:
+                                                        Matrix4.rotationY(
+                                                            widget.reverse
+                                                                ? pi
+                                                                : 0),
+                                                    child: Container(
+                                                      margin: EdgeInsets.symmetric(
+                                                          horizontal: widget
+                                                                      .showUserAvatar ==
+                                                                  DisplayWidget
+                                                                      .gone
+                                                              ? 0
+                                                              : 4.0),
+                                                      child: DeletedMessage(
+                                                        reverse: widget.reverse,
+                                                        borderRadiusGeometry: widget
+                                                            .borderRadiusGeometry,
+                                                        borderSide:
+                                                            widget.borderSide,
+                                                        shape: widget.shape,
+                                                        messageTheme:
+                                                            widget.messageTheme,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Card(
+                                                    clipBehavior:
+                                                        Clip.antiAlias,
+                                                    elevation: 0.0,
+                                                    margin:
+                                                        EdgeInsets.symmetric(
+                                                      horizontal: (isFailedState
+                                                              ? 15.0
+                                                              : 0.0) +
+                                                          (widget.showUserAvatar ==
+                                                                  DisplayWidget
+                                                                      .gone
+                                                              ? 0
+                                                              : 4.0),
+                                                    ),
+                                                    shape: widget.shape ??
+                                                        RoundedRectangleBorder(
+                                                          side: widget
+                                                                  .borderSide ??
+                                                              BorderSide(
+                                                                color: widget
+                                                                    .messageTheme
+                                                                    .messageBorderColor,
+                                                              ),
+                                                          borderRadius: widget
+                                                                  .borderRadiusGeometry ??
+                                                              BorderRadius.zero,
+                                                        ),
+                                                    color:
+                                                        _getBackgroundColor(),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: <Widget>[
+                                                        if (hasQuotedMessage)
+                                                          _buildQuotedMessage(),
+                                                        if (hasNonUrlAttachments)
+                                                          _parseAttachments(),
+                                                        if (!isGiphy)
+                                                          _buildTextBubble(),
+                                                      ],
                                                     ),
                                                   ),
-                                                )
-                                              : Card(
-                                                  clipBehavior: Clip.antiAlias,
-                                                  elevation: 0.0,
-                                                  margin: EdgeInsets.symmetric(
-                                                    horizontal: (isFailedState
-                                                            ? 15.0
-                                                            : 0.0) +
-                                                        (widget.showUserAvatar ==
-                                                                DisplayWidget
-                                                                    .gone
-                                                            ? 0
-                                                            : 4.0),
+                                          ),
+                                          if (widget
+                                              .showReactionPickerIndicator)
+                                            Positioned(
+                                              right: 4,
+                                              top: -8,
+                                              child: Transform(
+                                                transform: Matrix4.rotationY(
+                                                    widget.reverse ? pi : 0),
+                                                child: CustomPaint(
+                                                  painter:
+                                                      ReactionBubblePainter(
+                                                    StreamChatTheme.of(context)
+                                                        .colorTheme
+                                                        .white,
+                                                    Colors.transparent,
+                                                    Colors.transparent,
+                                                    tailCirclesSpace: 1,
                                                   ),
-                                                  shape: widget.shape ??
-                                                      RoundedRectangleBorder(
-                                                        side:
-                                                            widget.borderSide ??
-                                                                BorderSide(
-                                                                  color: widget
-                                                                      .messageTheme
-                                                                      .messageBorderColor,
-                                                                ),
-                                                        borderRadius: widget
-                                                                .borderRadiusGeometry ??
-                                                            BorderRadius.zero,
-                                                      ),
-                                                  color: _getBackgroundColor(),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: <Widget>[
-                                                      if (hasQuotedMessage)
-                                                        _buildQuotedMessage(),
-                                                      if (hasNonUrlAttachments)
-                                                        _parseAttachments(),
-                                                      if (!isGiphy)
-                                                        _buildTextBubble(),
-                                                    ],
-                                                  ),
-                                                ),
-                                        ),
-                                        if (widget.showReactionPickerIndicator)
-                                          Positioned(
-                                            right: 4,
-                                            top: -8,
-                                            child: Transform(
-                                              transform: Matrix4.rotationY(
-                                                  widget.reverse ? pi : 0),
-                                              child: CustomPaint(
-                                                painter: ReactionBubblePainter(
-                                                  StreamChatTheme.of(context)
-                                                      .colorTheme
-                                                      .white,
-                                                  Colors.transparent,
-                                                  Colors.transparent,
-                                                  tailCirclesSpace: 1,
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                              if (showBottomRow) SizedBox(height: 20.0),
+                            ],
+                          ),
+                          if (showBottomRow)
+                            Padding(
+                              padding: EdgeInsets.only(left: leftPadding),
+                              child: _bottomRow,
                             ),
-                            if (showBottomRow) SizedBox(height: 20.0),
-                          ],
-                        ),
-                        if (showBottomRow)
-                          Padding(
-                            padding: EdgeInsets.only(left: leftPadding),
-                            child: _bottomRow,
-                          ),
-                        if (isFailedState)
-                          Positioned(
-                            left: widget.reverse ? 0 : null,
-                            right: widget.reverse ? null : 0,
-                            bottom: showBottomRow ? 18 : -2,
-                            child: StreamSvgIcon.error(size: 20),
-                          ),
-                      ],
-                    ),
-                  ],
+                          if (isFailedState)
+                            Positioned(
+                              left: widget.reverse ? 0 : null,
+                              right: widget.reverse ? null : 0,
+                              bottom: showBottomRow ? 18 : -2,
+                              child: StreamSvgIcon.error(size: 20),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                //NNU
+                _buildReactionIndicatorLike(),
+              ]),
             ),
           ),
         ),
@@ -683,6 +718,46 @@ class _MessageWidgetState extends State<MessageWidget>
         );
       }).toList(),
     );
+  }
+
+  /// Add a reaction to the message
+  void sendReaction(BuildContext context, String reactionType) {
+    StreamChannel.of(context).channel.sendReaction(
+          widget.message,
+          reactionType,
+          enforceUnique: true,
+        );
+    //pop();
+  }
+
+  /// Remove a reaction from the message
+  void removeReaction(BuildContext context, Reaction reaction) {
+    StreamChannel.of(context).channel.deleteReaction(widget.message, reaction);
+    //pop();
+  }
+
+  //NNU
+  Widget _buildReactionIndicatorLike() {
+    final ownId = StreamChat.of(context).user.id;
+    final reactionsMap = <String, Reaction>{};
+    widget.message.ownReactions?.forEach((element) {
+      if (!reactionsMap.containsKey(element.type) || element.user.id == ownId) {
+        reactionsMap[element.type] = element;
+      }
+    });
+    final reactionsList = reactionsMap.values.toList()
+      ..sort((a, b) => a.user.id == ownId ? 1 : -1);
+
+    final haveLove = reactionsList
+        .singleWhere((element) => element.type == 'love', orElse: () => null);
+
+    return Align(
+        alignment: Alignment.centerRight,
+        child: StreamSvgIcon(
+            color: haveLove != null ? Colors.red : Colors.grey,
+            assetName: 'Icon_love_reaction.svg',
+            width: 30,
+            height: 30));
   }
 
   Widget _buildReactionIndicator(
