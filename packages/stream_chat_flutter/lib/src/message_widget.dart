@@ -783,14 +783,14 @@ class _MessageWidgetState extends State<MessageWidget>
           ? GestureDetector(
               onTap: () => _showMessageReactionsModalBottomSheet(context),
               child: ReactionBubble(
-                key: ValueKey('${widget.message.id}.reactions'),
-                reverse: widget.reverse,
-                flipTail: widget.reverse,
-                backgroundColor: widget.messageTheme.reactionsBackgroundColor,
-                borderColor: widget.messageTheme.reactionsBorderColor,
-                maskColor: widget.messageTheme.reactionsMaskColor,
-                reactions: reactionsList,
-              ),
+                  key: ValueKey('${widget.message.id}.reactions'),
+                  reverse: widget.reverse,
+                  flipTail: widget.reverse,
+                  backgroundColor: widget.messageTheme.reactionsBackgroundColor,
+                  borderColor: widget.messageTheme.reactionsBorderColor,
+                  maskColor: widget.messageTheme.reactionsMaskColor,
+                  reactions: reactionsList,
+                  reactionCounts: widget.message.reactionCounts),
             )
           : SizedBox(),
     );
