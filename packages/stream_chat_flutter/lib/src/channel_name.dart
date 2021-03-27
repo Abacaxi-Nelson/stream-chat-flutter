@@ -70,7 +70,7 @@ class ChannelName extends StatelessWidget {
 
         return Text(
           title,
-          style: textStyle,
+          style: textStyle.copyWith(fontSize: 17.0),
           overflow: TextOverflow.ellipsis,
         );
       },
