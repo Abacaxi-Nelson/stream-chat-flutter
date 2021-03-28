@@ -142,7 +142,17 @@ class ReactionBubble extends StatelessWidget {
                         .black
                         .withOpacity(.5),
               ),
-        Text("${reactionCounts[reaction.type]}")
+        Text('${reactionCounts[reaction.type]}',
+            style: TextStyle(
+              fontSize: 15.0,
+              color: (!highlightOwnReactions ||
+                      reaction.user.id == StreamChat.of(context).user.id)
+                  ? StreamChatTheme.of(context).colorTheme.accentBlue
+                  : StreamChatTheme.of(context)
+                      .colorTheme
+                      .black
+                      .withOpacity(.5),
+            ))
       ]),
     );
   }
