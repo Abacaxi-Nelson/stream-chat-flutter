@@ -113,6 +113,11 @@ class ReactionBubble extends StatelessWidget {
       orElse: () => null,
     );
 
+    var reactionCountsTmp = reactionCounts[reaction.type];
+    if (reactionCountsTmp == null) {
+      reactionCountsTmp = 0;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 4.0,
@@ -142,17 +147,18 @@ class ReactionBubble extends StatelessWidget {
                         .black
                         .withOpacity(.5),
               ),
-        Text('${reactionCounts[reaction.type]}',
-            style: TextStyle(
-              fontSize: 15.0,
-              color: (!highlightOwnReactions ||
-                      reaction.user.id == StreamChat.of(context).user.id)
-                  ? StreamChatTheme.of(context).colorTheme.accentBlue
-                  : StreamChatTheme.of(context)
-                      .colorTheme
-                      .black
-                      .withOpacity(.5),
-            ))
+        if (reactionCountsTmp > 1)
+          Text('${reactionCounts[reaction.type]}',
+              style: TextStyle(
+                fontSize: 15.0,
+                color: (!highlightOwnReactions ||
+                        reaction.user.id == StreamChat.of(context).user.id)
+                    ? StreamChatTheme.of(context).colorTheme.accentBlue
+                    : StreamChatTheme.of(context)
+                        .colorTheme
+                        .black
+                        .withOpacity(.5),
+              ))
       ]),
     );
   }
