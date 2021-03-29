@@ -113,7 +113,8 @@ class ReactionBubble extends StatelessWidget {
       orElse: () => null,
     );
 
-    var reactionCountsTmp = reactionCounts[reaction.type];
+    var reactionCountsTmp =
+        reactionCounts != null ? reactionCounts[reaction.type] : 0;
     if (reactionCountsTmp == null) {
       reactionCountsTmp = 0;
     }
