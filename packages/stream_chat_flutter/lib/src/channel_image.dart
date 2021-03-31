@@ -87,6 +87,29 @@ class ChannelImage extends StatelessWidget {
           String image;
           if (snapshot.data?.containsKey('image') == true) {
             image = snapshot.data['image'];
+          } else if (channel.state.members?.length == 1) {
+            final otherMember = channel.state.members
+                .firstWhere((member) => member.user.id == streamChat.user.id);
+            return StreamBuilder<User>(
+                stream: streamChat.client.state.usersStream
+                    .map((users) => users[otherMember.userId]),
+                initialData: otherMember.user,
+                builder: (context, snapshot) {
+                  return UserAvatar(
+                    borderRadius: borderRadius,
+                    user: snapshot.data ?? otherMember.user,
+                    constraints: constraints ??
+                        StreamChatTheme.of(context)
+                            .channelPreviewTheme
+                            .avatarTheme
+                            .constraints,
+                    onTap: onTap != null ? (_) => onTap() : null,
+                    selected: selected,
+                    selectionColor: selectionColor ??
+                        StreamChatTheme.of(context).colorTheme.accentBlue,
+                    selectionThickness: selectionThickness,
+                  );
+                });
           } else if (channel.state.members?.length == 2) {
             final otherMember = channel.state.members
                 .firstWhere((member) => member.user.id != streamChat.user.id);
