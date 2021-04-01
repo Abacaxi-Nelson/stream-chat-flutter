@@ -734,10 +734,13 @@ class _MessageWidgetState extends State<MessageWidget>
           enforceUnique: true,
         );
     // sync firestore
+    final ownId = StreamChat.of(context).user.id;
     final dio = Dio();
-    final response = await dio.get(
-        'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_$messageId&userid=${user.id}');
-    print(response.data.toString());
+    dio
+        .get(
+            'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_${widget.message.id}&userid=${ownId}')
+        .then((value) => print(value.data.toString()));
+
     // end
     //pop();
   }
@@ -750,9 +753,13 @@ class _MessageWidgetState extends State<MessageWidget>
         widget.message, reaction.copyWith(extraData: extraData));
 
     // sync firestore
+    final ownId = StreamChat.of(context).user.id;
     final dio = Dio();
-    final response = await dio.get(
-        'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_$messageId&userid=${user.id}');
+    final response = await dio
+        .get(
+            'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_${widget.message.id}&userid=${ownId}')
+        .then((value) => print(value.data.toString()));
+    ;
     print(response.data.toString());
     // end
     //pop();
