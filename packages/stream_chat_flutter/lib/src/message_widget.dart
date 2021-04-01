@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -732,6 +733,12 @@ class _MessageWidgetState extends State<MessageWidget>
           extraData: extraData,
           enforceUnique: true,
         );
+    // sync firestore
+    final dio = Dio();
+    final response = await dio.get(
+        'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_$messageId&userid=${user.id}');
+    print(response.data.toString());
+    // end
     //pop();
   }
 
@@ -741,6 +748,13 @@ class _MessageWidgetState extends State<MessageWidget>
     extraData['skippush'] = false;
     StreamChannel.of(context).channel.deleteReaction(
         widget.message, reaction.copyWith(extraData: extraData));
+
+    // sync firestore
+    final dio = Dio();
+    final response = await dio.get(
+        'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_$messageId&userid=${user.id}');
+    print(response.data.toString());
+    // end
     //pop();
   }
 
