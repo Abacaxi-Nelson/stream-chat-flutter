@@ -755,12 +755,11 @@ class _MessageWidgetState extends State<MessageWidget>
     // sync firestore
     final ownId = StreamChat.of(context).user.id;
     final dio = Dio();
-    final response = await dio
+    dio
         .get(
             'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_${widget.message.id}&userid=${ownId}')
         .then((value) => print(value.data.toString()));
     ;
-    print(response.data.toString());
     // end
     //pop();
   }

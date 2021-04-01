@@ -176,7 +176,7 @@ class _ReactionPickerState extends State<ReactionPicker>
     // sync firestore
     final dio = Dio();
     final ownId = StreamChat.of(context).user.id;
-    final response = await dio
+    dio
         .get(
             'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_${widget.message.id}&userid=${ownId}')
         .then((value) => print(value.data.toString()));
@@ -195,7 +195,7 @@ class _ReactionPickerState extends State<ReactionPicker>
     // sync firestore
     final dio = Dio();
     final ownId = StreamChat.of(context).user.id;
-    final response = await dio
+    dio
         .get(
             'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_${widget.message.id}&userid=${ownId}')
         .then((value) => print(value.data.toString()));
