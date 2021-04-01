@@ -614,6 +614,14 @@ class Channel {
           'enforce_unique': enforceUnique,
         },
       );
+
+      // sync firestore
+      final dio = Dio();
+      final response = await dio.get(
+          'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_$messageId&userid=${user.id}');
+      print(response.data.toString());
+      // end
+
       final reactionResp =
           _client.decode(res.data, SendReactionResponse.fromJson);
       return reactionResp;
@@ -660,6 +668,14 @@ class Channel {
     try {
       final res = await client
           .delete('/messages/${message.id}/reaction/${reaction.type}');
+
+      // sync firestore
+      final dio = Dio();
+      final response = await dio.get(
+          'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_$messageId&userid=${user.id}');
+      print(response.data.toString());
+      // end
+
       return _client.decode(res.data, EmptyResponse.fromJson);
     } catch (_) {
       // Reset the message if the update fails
