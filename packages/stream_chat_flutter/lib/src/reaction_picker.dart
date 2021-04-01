@@ -174,13 +174,14 @@ class _ReactionPickerState extends State<ReactionPicker>
           enforceUnique: true,
         );
     // sync firestore
-    final dio = Dio();
-    final ownId = StreamChat.of(context).user.id;
-    dio
-        .get(
-            'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_${widget.message.id}&userid=${ownId}')
-        .then((value) => print(value.data.toString()));
-
+    if (widget.message.attachments.isNotEmpty) {
+      final dio = Dio();
+      final ownId = StreamChat.of(context).user.id;
+      dio
+          .get(
+              'https://us-central1-amber-app-supercool.cloudfunctions.net/streamLike?id=dm_${widget.message.id}&userid=${ownId}')
+          .then((value) => print(value.data.toString()));
+    }
     // end
     pop();
   }
@@ -193,12 +194,14 @@ class _ReactionPickerState extends State<ReactionPicker>
         widget.message, reaction.copyWith(extraData: extraData));
 
     // sync firestore
-    final dio = Dio();
-    final ownId = StreamChat.of(context).user.id;
-    dio
-        .get(
-            'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_${widget.message.id}&userid=${ownId}')
-        .then((value) => print(value.data.toString()));
+    if (widget.message.attachments.isNotEmpty) {
+      final dio = Dio();
+      final ownId = StreamChat.of(context).user.id;
+      dio
+          .get(
+              'https://us-central1-amber-app-supercool.cloudfunctions.net/streamUnlike?id=dm_${widget.message.id}&userid=${ownId}')
+          .then((value) => print(value.data.toString()));
+    }
     // end
 
     pop();
