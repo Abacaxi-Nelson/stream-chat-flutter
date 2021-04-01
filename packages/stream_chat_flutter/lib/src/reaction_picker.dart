@@ -164,8 +164,11 @@ class _ReactionPickerState extends State<ReactionPicker>
 
   /// Add a reaction to the message
   void sendReaction(BuildContext context, String reactionType) {
+    final extraData = <String, dynamic>{};
+    extraData['skippush'] = false;
     StreamChannel.of(context).channel.sendReaction(
           widget.message,
+          extraData: extraData,
           reactionType,
           enforceUnique: true,
         );
@@ -174,7 +177,9 @@ class _ReactionPickerState extends State<ReactionPicker>
 
   /// Remove a reaction from the message
   void removeReaction(BuildContext context, Reaction reaction) {
-    StreamChannel.of(context).channel.deleteReaction(widget.message, reaction);
+    final extraData = <String, dynamic>{};
+    extraData['skippush'] = false;
+    StreamChannel.of(context).channel.deleteReaction(widget.message, reaction, extraData: extraData);
     pop();
   }
 

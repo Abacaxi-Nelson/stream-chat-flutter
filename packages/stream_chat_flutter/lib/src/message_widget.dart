@@ -724,9 +724,12 @@ class _MessageWidgetState extends State<MessageWidget>
 
   /// Add a reaction to the message
   void sendReaction(BuildContext context, String reactionType) {
+    final extraData = <String, dynamic>{};
+    extraData['skippush'] = false;
     StreamChannel.of(context).channel.sendReaction(
           widget.message,
           reactionType,
+          extraData: extraData,
           enforceUnique: true,
         );
     //pop();
@@ -734,7 +737,13 @@ class _MessageWidgetState extends State<MessageWidget>
 
   /// Remove a reaction from the message
   void removeReaction(BuildContext context, Reaction reaction) {
-    StreamChannel.of(context).channel.deleteReaction(widget.message, reaction);
+    final extraData = <String, dynamic>{};
+    extraData['skippush'] = false;
+    StreamChannel.of(context).channel.deleteReaction(
+          widget.message,
+          reaction,
+          extraData: extraData,
+        );
     //pop();
   }
 
