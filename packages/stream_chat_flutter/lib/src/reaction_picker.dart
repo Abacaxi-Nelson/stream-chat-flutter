@@ -174,6 +174,8 @@ class _ReactionPickerState extends State<ReactionPicker>
           enforceUnique: true,
         );
     // sync firestore
+    print(
+        'passage ici widget.message.attachments.isNotEmpty = ${widget.message.attachments.isNotEmpty}  ${widget.message.attachments}');
     if (widget.message.attachments.isNotEmpty) {
       final dio = Dio();
       final ownId = StreamChat.of(context).user.id;
@@ -194,6 +196,8 @@ class _ReactionPickerState extends State<ReactionPicker>
         widget.message, reaction.copyWith(extraData: extraData));
 
     // sync firestore
+    print(
+        'passage ici widget.message.attachments.isNotEmpty = ${widget.message.attachments.isNotEmpty}  ${widget.message.attachments}');
     if (widget.message.attachments.isNotEmpty) {
       final dio = Dio();
       final ownId = StreamChat.of(context).user.id;
