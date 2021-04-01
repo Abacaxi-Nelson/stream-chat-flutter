@@ -740,10 +740,7 @@ class _MessageWidgetState extends State<MessageWidget>
     final extraData = <String, dynamic>{};
     extraData['skippush'] = false;
     StreamChannel.of(context).channel.deleteReaction(
-          widget.message,
-          reaction,
-          extraData: extraData,
-        );
+        widget.message, reaction.copyWith(extraData: extraData));
     //pop();
   }
 

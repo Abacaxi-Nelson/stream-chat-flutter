@@ -168,8 +168,8 @@ class _ReactionPickerState extends State<ReactionPicker>
     extraData['skippush'] = false;
     StreamChannel.of(context).channel.sendReaction(
           widget.message,
-          extraData: extraData,
           reactionType,
+          extraData: extraData,
           enforceUnique: true,
         );
     pop();
@@ -179,7 +179,8 @@ class _ReactionPickerState extends State<ReactionPicker>
   void removeReaction(BuildContext context, Reaction reaction) {
     final extraData = <String, dynamic>{};
     extraData['skippush'] = false;
-    StreamChannel.of(context).channel.deleteReaction(widget.message, reaction, extraData: extraData);
+    StreamChannel.of(context).channel.deleteReaction(
+        widget.message, reaction.copyWith(extraData: extraData));
     pop();
   }
 
