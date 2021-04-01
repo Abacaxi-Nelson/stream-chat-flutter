@@ -734,8 +734,6 @@ class _MessageWidgetState extends State<MessageWidget>
           enforceUnique: true,
         );
     // sync firestore
-    print(
-        'passage ici widget.message.attachments.isNotEmpty = ${widget.message.attachments.isNotEmpty}  ${widget.message.attachments}');
     if (widget.message.attachments.isNotEmpty) {
       final ownId = StreamChat.of(context).user.id;
       final dio = Dio();
@@ -756,8 +754,6 @@ class _MessageWidgetState extends State<MessageWidget>
         widget.message, reaction.copyWith(extraData: extraData));
 
     // sync firestore
-    print(
-        'passage ici widget.message.attachments.isNotEmpty = ${widget.message.attachments.isNotEmpty}  ${widget.message.attachments}');
     if (widget.message.attachments.isNotEmpty) {
       final ownId = StreamChat.of(context).user.id;
       final dio = Dio();
