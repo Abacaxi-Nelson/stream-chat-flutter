@@ -34,7 +34,7 @@ dependencies:
   image_picker: ^0.6.7+17
   flutter_keyboard_visibility: ^4.0.2
   video_compress: ^2.1.1
-  visibility_detector: ^0.1.5
+  visibility_detector: ^0.2.0
   http_parser: ^3.1.4
   meta: ^1.2.4
   lottie: ^0.7.0+1
