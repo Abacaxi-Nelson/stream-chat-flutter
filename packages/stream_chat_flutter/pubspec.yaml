@@ -35,7 +35,7 @@ dependencies:
   flutter_keyboard_visibility: ^4.0.2
   video_compress: ^3.0.0
   visibility_detector: ^0.2.0
-  http_parser: ^3.1.4
+  http_parser: ^4.0.0
   meta: ^1.2.4
   lottie: ^1.0.1
   substring_highlight: ^0.1.2
