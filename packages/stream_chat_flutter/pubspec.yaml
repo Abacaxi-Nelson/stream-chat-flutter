@@ -43,7 +43,7 @@ dependencies:
   clipboard: ^0.1.2+8
   image_gallery_saver: ^1.6.7
   esys_flutter_share: ^1.0.2
-  photo_manager: ^0.6.0
+  photo_manager: ^1.1.4
   transparent_image: ^1.0.0
   ezanimation: ^0.4.1
   synchronized: ^2.2.0+2
