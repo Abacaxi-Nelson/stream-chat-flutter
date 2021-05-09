@@ -30,7 +30,7 @@ dependencies:
   emojis: ^0.9.3
   video_player: ^2.1.1
   chewie: ^0.12.1+1
-  file_picker: ^2.1.5
+  file_picker: ^3.0.1
   image_picker: ^0.7.4
   flutter_keyboard_visibility: ^4.0.2
   video_compress: ^3.0.0
